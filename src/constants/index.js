@@ -226,7 +226,7 @@ const WORK_LOCATION = {
     // ▶ Project 1
     {
       id: 5,
-      name: "Nike Ecommerce Website Application",
+      name: "Car Rental",
       icon: "/images/folder.png",
       kind: "folder",
       position: "top-10 left-5", // icon position inside Finder
@@ -234,30 +234,30 @@ const WORK_LOCATION = {
       children: [
         {
           id: 1,
-          name: "Nike Project.txt",
+          name: "Description.txt",
           icon: "/images/txt.png",
           kind: "file",
           fileType: "txt",
           position: "top-5 left-10",
           description: [
-            "The Nike eCommerce website is a sleek and modern platform designed for shopping the latest Nike collections.",
-            "Instead of a simple online store, it delivers an immersive experience with bold visuals, interactive product displays, and smooth navigation.",
-            "Think of it like walking into a flagship Nike store—but right from your phone or laptop.",
-            "It's built with Next.js and Tailwind, ensuring fast performance, responsive design, and a clean, premium look.",
+            "The Car Rental website is a sleek and modern platform designed for rent a best car.",
+            "Instead of a simple rent it display price, car images, car fuel type, seating capacity and more.",
+            "Car owner can give thire cars on rent from our platform and for them there is dedicated dashbord.",
+            "It's built with React, Node.js and Tailwind, ensuring fast performance, responsive design, and a clean, premium look.",
           ],
         },
         {
           id: 2,
-          name: "nike.com",
+          name: "Live link",
           icon: "/images/safari.png",
           kind: "file",
           fileType: "url",
-          href: "https://youtu.be/fZdTYswuZjU?si=Awjl-pIst9e09_UU",
+          href: "https://car-rental-flax-zeta.vercel.app/",
           position: "top-10 right-20",
         },
         {
           id: 4,
-          name: "nike.png",
+          name: "Home Page",
           icon: "/images/image.png",
           kind: "file",
           fileType: "img",
@@ -279,7 +279,7 @@ const WORK_LOCATION = {
     // ▶ Project 2
     {
       id: 6,
-      name: "AI Resume Analyzer",
+      name: "VideoTube",
       icon: "/images/folder.png",
       kind: "folder",
       position: "top-52 right-80",
@@ -287,30 +287,30 @@ const WORK_LOCATION = {
       children: [
         {
           id: 1,
-          name: "AI Resume Analyzer Project.txt",
+          name: "Description.txt",
           icon: "/images/txt.png",
           kind: "file",
           fileType: "txt",
           position: "top-5 right-10",
           description: [
-            "AI Resume Analyzer is a smart tool that helps you perfect your resume with instant feedback.",
-            "Instead of guessing what recruiters want, you get AI-powered insights on keywords, formatting, and overall impact.",
-            "Think of it like having a career coach—pointing out strengths, fixing weaknesses, and boosting your chances of landing interviews.",
-            "It's built with Next.js and Tailwind, so it runs fast, looks professional, and works seamlessly on any device.",
+            "VideoTube is completly inspired by youtube.",
+            "Here I implemented authentication using JWt varification.",
+            "I Implemented complete backend using mongodb in where i used mongos, created schema and used aggregate pipeline.",
+            "It's built with React, Node.js, Express.js and Tailwind, so it runs fast, looks professional, and works seamlessly on any device.",
           ],
         },
         {
           id: 2,
-          name: "ai-resume-analyzer.com",
+          name: "videotube.com",
           icon: "/images/safari.png",
           kind: "file",
           fileType: "url",
-          href: "https://youtu.be/iYOz165wGkQ?si=R1hs8Legl200m0Cl",
+          href: "https://github.com/Kalpesh-Parmar-0/VideoTube",
           position: "top-20 left-20",
         },
         {
           id: 4,
-          name: "ai-resume-analyzer.png",
+          name: "videotube.png",
           icon: "/images/image.png",
           kind: "file",
           fileType: "img",
@@ -332,7 +332,7 @@ const WORK_LOCATION = {
     // ▶ Project 3
     {
       id: 7,
-      name: "Food Delivery App",
+      name: "Brain Tumor Detection",
       icon: "/images/folder.png",
       kind: "folder",
       position: "top-10 left-80",
@@ -340,30 +340,30 @@ const WORK_LOCATION = {
       children: [
         {
           id: 1,
-          name: "Food Delivery App Project.txt",
+          name: "Brain Tumor Detection.txt",
           icon: "/images/txt.png",
           kind: "file",
           fileType: "txt",
           position: "top-5 left-10",
           description: [
-            "Our Food Delivery App is a fast and convenient way to order meals from your favorite restaurants.",
-            "Instead of making calls or waiting in line, you can browse menus, customize orders, and track deliveries in real time.",
-            "Think of it like having your favorite restaurants in your pocket—ready to deliver anytime, anywhere.",
-            "It’s built with React Native, so it works smoothly on both iOS and Android with a clean, modern design.",
+            "Our Brain Tumor Detection App is a fast and convenient way to check if there is any type of tumor or not.",
+            "Instead of manually cheking tumor where exper's knowladge is require and takes lot of time, using my model user can easily check tumor.",
+            "I have used tensorflow's VGG16 pretrained model and implemented new nodes for better accuracy.",
+            "It's built with Python, Pandas, NumPy, Seaborn, Matplotlib, Tensorflow, Keras and VGG16 algorithom.",
           ],
         },
         {
           id: 2,
-          name: "food-delivery-app.com",
+          name: "brain tumor detection.com",
           icon: "/images/safari.png",
           kind: "file",
           fileType: "url",
-          href: "https://youtu.be/LKrX390fJMw?si=cExkuVhf2DTV9G2-",
+          href: "#",
           position: "top-10 right-20",
         },
         {
           id: 4,
-          name: "food-delivery-app.png",
+          name: "brain tumor.png",
           icon: "/images/image.png",
           kind: "file",
           fileType: "img",
