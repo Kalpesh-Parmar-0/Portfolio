@@ -3,5 +3,6 @@ import Safari from "./Safari";
 import Resume from "./Resume";
 import Finder from "./Finder";
 import Text from "./Text";
+import ImageWindow from "./ImageWindowContent";
 
-export { Terminal, Safari, Resume, Finder, Text };
+export { Terminal, Safari, Resume, Finder, Text, ImageWindow };
