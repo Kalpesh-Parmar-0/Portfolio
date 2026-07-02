@@ -189,19 +189,19 @@ const photosLinks = [
 const gallery = [
   {
     id: 1,
-    img: "/images/gal1.png",
+    img: "/images/kalpesh.jpeg",
   },
   {
     id: 2,
-    img: "/images/gal2.png",
+    img: "/images/kalpesh-2.jpg",
   },
-  {
-    id: 3,
-    img: "/images/gal3.png",
-  },
+  // {
+  //   id: 3,
+  //   img: "/images/kalpesh-3.jpg",
+  // },
   {
     id: 4,
-    img: "/images/gal4.png",
+    img: "/images/kalpesh-4.jpg",
   },
 ];
 
