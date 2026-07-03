@@ -6,7 +6,7 @@ import gsap from "gsap";
 import useWindowStore from "#store/window";
 
 const Dock = () => {
-  const { openWindow, closeWindow, windows } = useWindowStore();
+  const { openWindow, closeWindow, restoreWindow, windows } = useWindowStore();
   const dockRef = useRef(null);
 
   useGSAP(() => {
@@ -58,7 +58,9 @@ const Dock = () => {
       return;
     }
 
-    if (window.isOpen) {
+    if (window.isOpen && window.isMinimized) {
+      restoreWindow(app.id);
+    } else if (window.isOpen) {
       closeWindow(app.id);
     } else {
       openWindow(app.id);
@@ -86,6 +88,8 @@ const Dock = () => {
                 className={canOpen ? "" : "opacity-60"}
               />
             </button>
+
+            {windows[id]?.isOpen && <span className="dock-indicator" />}
           </div>
         ))}
 
