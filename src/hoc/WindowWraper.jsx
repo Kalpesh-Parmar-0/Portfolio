@@ -47,64 +47,63 @@ const WindowWraper = (Component, windowKey) => {
       const instance = draggableRef.current;
       if (!el || !isOpen) return;
 
+      const navGap = 36;
+      const sideGap = 12;
+      const dockGap = 104;
+
       if (isMaximized) {
         const rect = el.getBoundingClientRect();
+        const currentX = instance?.x ?? 0;
+        const currentY = instance?.y ?? 0;
+
         maximizeSnapshotRef.current = {
-          top: rect.top,
-          left: rect.left,
+          x: currentX,
+          y: currentY,
           width: rect.width,
           height: rect.height,
-          x: instance?.x ?? 0,
-          y: instance?.y ?? 0,
         };
 
         instance?.disable();
 
-        // Lock the element into fixed, pixel-based positioning at its
-        // current on-screen spot (so switching from transform-based drag
-        // positioning to fixed top/left causes no visual jump)...
-        gsap.set(el, {
-          position: "fixed",
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height,
-          x: 0,
-          y: 0,
-        });
+        const targetLeft = sideGap;
+        const targetTop = navGap;
+        const targetWidth = Math.max(320, window.innerWidth - sideGap * 2);
+        const targetHeight = Math.max(
+          240,
+          window.innerHeight - navGap - dockGap,
+        );
 
-        const navGap = 36;
-        const sideGap = 12;
-        const dockGap = 104;
-
-        // ...then animate it out to fill the viewport, macOS-style.
+        // Express the destination purely as a transform delta from the
+        // window's actual current on-screen box (rect), instead of
+        // switching position to "fixed" and animating top/left directly.
+        // Different windows use different Tailwind positioning classes
+        // (px-based vs. fraction/%-based), and animating top/left mixed
+        // with a position-mode switch is sensitive to that - transform is
+        // always resolved in real pixels regardless of how the window was
+        // originally positioned, so this can't drift off-screen.
         gsap.to(el, {
-          top: navGap,
-          left: sideGap,
-          width: window.innerWidth - sideGap * 2,
-          height: window.innerHeight - navGap - dockGap,
+          x: currentX + (targetLeft - rect.left),
+          y: currentY + (targetTop - rect.top),
+          width: targetWidth,
+          height: targetHeight,
           borderRadius: 0,
           duration: 0.4,
           ease: "power2.inOut",
         });
       } else if (maximizeSnapshotRef.current) {
-        const { top, left, width, height, x, y } = maximizeSnapshotRef.current;
+        const { x, y, width, height } = maximizeSnapshotRef.current;
 
         gsap.to(el, {
-          top,
-          left,
+          x,
+          y,
           width,
           height,
           borderRadius: 12,
           duration: 0.35,
           ease: "power2.inOut",
           onComplete: () => {
-            // Hand control back to Tailwind's absolute/top/left classes and
-            // restore whatever drag offset the window had before maximizing.
-            gsap.set(el, {
-              clearProps: "position,top,left,width,height,borderRadius",
-            });
-            gsap.set(el, { x, y });
+            // Hand width/height back to the window's own CSS classes.
+            gsap.set(el, { clearProps: "width,height,borderRadius" });
             // Only re-enable dragging if the window isn't ALSO currently
             // minimized (e.g. minimized while maximized, then un-maximized
             // via some other path) - keep it locked while hidden.
