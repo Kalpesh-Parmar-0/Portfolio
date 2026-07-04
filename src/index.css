@@ -68,14 +68,6 @@ body {
 
   #welcome {
     @apply text-gray-200 flex flex-col justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none max-sm:h-screen max-sm:w-full max-sm:px-10;
-
-    .small-screen {
-      @apply sm:hidden m-7 bg-red-300/20 backdrop-blur-lg p-3 rounded-md absolute top-10;
-
-      p {
-        @apply flex-1 text-[16px] text-center font-roboto text-gray-400;
-      }
-    }
   }
 
   #dock {
@@ -116,6 +108,10 @@ body {
     .maximize {
       @apply size-3.5 rounded-full bg-[#2acb42] cursor-pointer transition-transform hover:scale-110;
     }
+  }
+
+  .mobile-back {
+    @apply flex items-center gap-0.5 -ml-2 pl-2 pr-3 py-1.5 rounded-full text-[15px] font-medium text-blue-600 active:bg-black/5 transition-colors;
   }
 
   #window-header {
@@ -400,5 +396,172 @@ body {
         }
       }
     }
+  }
+
+  #mobile-home {
+    @apply relative w-dvw h-dvh flex flex-col select-none;
+
+    &::before {
+      content: "";
+      @apply absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/30 pointer-events-none;
+    }
+
+    .status-bar {
+      @apply relative z-10 flex items-center justify-between px-6 pb-1 text-white text-[13px] font-semibold;
+      padding-top: calc(0.75rem + env(safe-area-inset-top));
+
+      time {
+        @apply tabular-nums;
+      }
+    }
+
+    .greeting {
+      @apply relative z-10 px-6 pt-8 pb-4 text-white drop-shadow-md;
+
+      p {
+        @apply text-sm font-medium text-white/80;
+      }
+
+      h1 {
+        @apply text-2xl font-georama font-semibold mt-0.5;
+      }
+    }
+
+    .app-grid {
+      @apply relative z-10 flex-1 grid grid-cols-4 gap-y-6 gap-x-2 content-start px-6 pt-4 overflow-y-auto;
+    }
+
+    .app-icon {
+      @apply flex flex-col items-center gap-1.5 cursor-pointer transition-transform active:scale-90 disabled:opacity-40;
+
+      .icon-wrap {
+        @apply size-14 rounded-2xl overflow-hidden bg-white/15 backdrop-blur-md shadow-lg ring-1 ring-white/20;
+
+        img {
+          @apply size-full object-cover;
+        }
+      }
+
+      p {
+        @apply text-[11px] font-medium text-white drop-shadow;
+      }
+    }
+
+    .home-indicator {
+      @apply relative z-10 mx-auto mb-2 w-32 h-1.5 rounded-full bg-white/70;
+    }
+  }
+}
+
+@media (max-width: 639px) {
+  #terminal,
+  #safari,
+  #resume,
+  #finder,
+  #txtfile,
+  #imgfile,
+  #contact,
+  #photos {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    border-radius: 0 !important;
+  }
+
+  #terminal #window-header,
+  #safari #window-header,
+  #resume #window-header,
+  #finder #window-header,
+  #txtfile #window-header,
+  #imgfile #window-header,
+  #contact #window-header,
+  #photos #window-header {
+    border-radius: 0;
+    padding-top: calc(0.75rem + env(safe-area-inset-top));
+  }
+
+  /* Sidebar-based windows (Finder, Photos): a fixed-width left column
+     doesn't fit a phone screen, so it becomes a horizontally scrollable
+     strip of chips above the content instead of a side panel. */
+  #finder .bg-white.flex,
+  #photos .bg-white.flex {
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #finder .sidebar,
+  #photos .sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    padding: 0.75rem 1rem;
+    gap: 1rem;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  #finder .sidebar > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  #finder .sidebar h3,
+  #photos .sidebar h2 {
+    display: none;
+  }
+
+  #finder .sidebar ul,
+  #photos .sidebar ul {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  #finder .sidebar li,
+  #photos .sidebar li {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Icons in Finder's content area use per-item absolute-position classes
+     designed for a big desktop canvas - reflow them into a simple grid. */
+  #finder .content {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: none;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  #finder .content li {
+    position: static !important;
+  }
+
+  #photos .gallery {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  #photos .gallery ul {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: none;
+  }
+
+  #photos .gallery ul li {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+    aspect-ratio: 1;
+  }
+
+  #contact ul {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }

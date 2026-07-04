@@ -1,4 +1,5 @@
 import useWindowStore from "#store/window";
+import { useIsMobile } from "#hooks";
 import { useGSAP } from "@gsap/react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
@@ -11,6 +12,7 @@ const WindowWraper = (Component, windowKey) => {
   const Wrapped = (props) => {
     const { focusWindow, windows } = useWindowStore();
     const { isOpen, zIndex, isMinimized, isMaximized } = windows[windowKey];
+    const isMobile = useIsMobile();
     const ref = useRef(null);
     const draggableRef = useRef(null);
     // Separate snapshots: maximize/minimize can each be toggled independently
@@ -20,24 +22,35 @@ const WindowWraper = (Component, windowKey) => {
     const minimizeSnapshotRef = useRef(null);
     const resizeStateRef = useRef(null);
 
-    // Open animation
+    // Open animation. On mobile, windows are fullscreen "apps" - a slide-up
+    // presentation (iOS-style) reads better there than the desktop
+    // scale/fade-in.
     useGSAP(() => {
       const el = ref.current;
       if (!el || !isOpen) return;
       el.style.display = "block";
 
-      gsap.fromTo(
-        el,
-        { scale: 0.8, opacity: 0, y: 40 },
-        { scale: 1, opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
-      );
-    }, [isOpen]);
+      if (isMobile) {
+        gsap.fromTo(
+          el,
+          { yPercent: 100 },
+          { yPercent: 0, duration: 0.4, ease: "power3.out" },
+        );
+      } else {
+        gsap.fromTo(
+          el,
+          { scale: 0.8, opacity: 0, y: 40 },
+          { scale: 1, opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
+        );
+      }
+    }, [isOpen, isMobile]);
 
     // Draggable setup - restricted to the header as the drag handle (not
     // the whole window). This also keeps it from fighting with the resize
     // handles below: Draggable checks pointerdown targets against its
     // trigger itself, so without this restriction a drag on the resize
     // handles would kick off a window-drag at the same time as a resize.
+    // Disabled entirely on mobile - fullscreen "apps" don't move around.
     useGSAP(() => {
       const el = ref.current;
       if (!el) return;
@@ -46,16 +59,28 @@ const WindowWraper = (Component, windowKey) => {
         trigger: header,
         onPress: () => focusWindow(windowKey),
       });
+      if (isMobile) {
+        instance.disable();
+        // A window may have been dragged around before the viewport crossed
+        // into mobile width (e.g. someone shrinking their browser to
+        // preview it, or rotating a tablet). Mobile positions windows with
+        // fixed/inset-0 fullscreen CSS, and a leftover drag transform would
+        // stack right on top of that, shoving the "fullscreen" box off
+        // however far it had been dragged. Clear it so mobile always starts
+        // from a clean slate.
+        gsap.set(el, { x: 0, y: 0 });
+      }
       draggableRef.current = instance;
 
       return () => instance.kill();
-    }, []);
+    }, [isMobile]);
 
-    // Maximize / un-maximize animation
+    // Maximize / un-maximize animation. Not applicable on mobile - windows
+    // are always fullscreen there, so this is a no-op.
     useGSAP(() => {
       const el = ref.current;
       const instance = draggableRef.current;
-      if (!el || !isOpen) return;
+      if (!el || !isOpen || isMobile) return;
 
       const navGap = 36;
       const sideGap = 12;
@@ -125,15 +150,14 @@ const WindowWraper = (Component, windowKey) => {
           },
         });
       }
-    }, [isMaximized, isOpen]);
+    }, [isMaximized, isOpen, isMobile]);
 
-    // Minimize / restore animation (genie-to-dock effect).
-    // Works from either the normal windowed state OR the maximized state -
-    // minimizing doesn't require un-maximizing first.
+    // Minimize / restore animation (genie-to-dock effect). Not applicable
+    // on mobile - there's no dock to minimize toward there.
     useGSAP(() => {
       const el = ref.current;
       const instance = draggableRef.current;
-      if (!el || !isOpen) return;
+      if (!el || !isOpen || isMobile) return;
 
       if (isMinimized) {
         const rect = el.getBoundingClientRect();
@@ -185,7 +209,7 @@ const WindowWraper = (Component, windowKey) => {
           },
         );
       }
-    }, [isMinimized, isMaximized, isOpen]);
+    }, [isMinimized, isMaximized, isOpen, isMobile]);
 
     useLayoutEffect(() => {
       const el = ref.current;
@@ -198,6 +222,7 @@ const WindowWraper = (Component, windowKey) => {
     // never has to also shift the window's x/y transform to keep the
     // opposite edge anchored, which keeps this independent of whatever
     // positioning units (%, px, left-based, right-based) a window's CSS uses.
+    // Not offered on mobile - fullscreen "apps" aren't resizable.
     const startResize = (direction) => (e) => {
       // Stop this from also bubbling to the Draggable instance listening on
       // the same element, which would otherwise start dragging the window.
@@ -205,7 +230,7 @@ const WindowWraper = (Component, windowKey) => {
       e.preventDefault();
 
       const el = ref.current;
-      if (!el || isMaximized) return;
+      if (!el || isMaximized || isMobile) return;
 
       focusWindow(windowKey);
 
@@ -258,7 +283,7 @@ const WindowWraper = (Component, windowKey) => {
       <section id={windowKey} ref={ref} style={{ zIndex }} className="absolute">
         <Component {...props} />
 
-        {!isMaximized && (
+        {!isMobile && !isMaximized && (
           <>
             <div
               onPointerDown={startResize("right")}

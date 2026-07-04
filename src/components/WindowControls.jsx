@@ -1,8 +1,25 @@
 import useWindowStore from "#store/window";
+import { useIsMobile } from "#hooks";
+import { ChevronLeft } from "lucide-react";
 
 const WindowControls = ({ target }) => {
   const { closeWindow, minimizeWindow, toggleMaximizeWindow } =
     useWindowStore();
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <button
+        type="button"
+        className="mobile-back"
+        aria-label="Back to Home Screen"
+        onClick={() => closeWindow(target)}
+      >
+        <ChevronLeft className="size-4" strokeWidth={2.5} />
+        <span>Home</span>
+      </button>
+    );
+  }
 
   return (
     <div id="window-controls">

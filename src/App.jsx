@@ -1,4 +1,4 @@
-import { Navbar, Welcome, Dock, Home } from "#components";
+import { Navbar, Welcome, Dock, Home, MobileHome } from "#components";
 import {
   Contact,
   Finder,
@@ -9,16 +9,26 @@ import {
   Terminal,
   Text,
 } from "#windows";
+import { useIsMobile } from "#hooks";
 import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 gsap.registerPlugin(Draggable);
 
 const App = () => {
+  const isMobile = useIsMobile();
+
   return (
     <main>
-      <Navbar />
-      <Welcome />
-      <Dock />
+      {isMobile ? (
+        <MobileHome />
+      ) : (
+        <>
+          <Navbar />
+          <Welcome />
+          <Dock />
+          <Home />
+        </>
+      )}
 
       <Terminal />
       <Safari />
@@ -28,7 +38,6 @@ const App = () => {
       <ImageWindow />
       <Contact />
       <Photos />
-      <Home />
     </main>
   );
 };
