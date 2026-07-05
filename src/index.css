@@ -104,18 +104,6 @@ body {
     @apply relative;
   }
 
-  .theme-menu {
-    @apply absolute right-0 top-full mt-2 w-36 py-1.5 rounded-xl bg-white/90 dark:bg-neutral-800/90 backdrop-blur-xl shadow-2xl ring-1 ring-black/5 dark:ring-white/10 z-50;
-
-    button {
-      @apply w-full flex items-center gap-2.5 px-3 py-1.5 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-blue-500 hover:text-white transition-colors;
-
-      &.active {
-        @apply font-semibold;
-      }
-    }
-  }
-
   #window-controls {
     @apply flex gap-2;
 
