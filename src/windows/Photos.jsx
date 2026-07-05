@@ -24,7 +24,7 @@ const Photos = () => {
         <h2>Photos</h2>
       </div>
 
-      <div className="bg-white flex h-full">
+      <div className="bg-white dark:bg-neutral-900 flex h-full">
         <div className="sidebar">
           <h2>Albums</h2>
           <ul>

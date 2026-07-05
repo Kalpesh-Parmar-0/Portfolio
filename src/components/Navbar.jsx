@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 
 import { navIcons, navLinks } from "#constants";
 import useWindowStore from "#store/window";
+import { ThemeToggle } from "#components";
 
 const Navbar = () => {
   const { openWindow } = useWindowStore();
@@ -21,11 +22,15 @@ const Navbar = () => {
 
       <div>
         <ul>
-          {navIcons.map(({ id, img }) => (
-            <li key={id}>
-              <img src={img} className="icon-hover" alt={`icon-${id}`} />
-            </li>
-          ))}
+          {navIcons.map(({ id, img }) =>
+            img === "/icons/mode.svg" ? (
+              <ThemeToggle key={id} />
+            ) : (
+              <li key={id}>
+                <img src={img} className="icon-hover" alt={`icon-${id}`} />
+              </li>
+            ),
+          )}
         </ul>
 
         <time>{dayjs().format("ddd MMM D h:mm A")}</time>
