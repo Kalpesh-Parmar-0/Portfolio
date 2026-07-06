@@ -104,6 +104,22 @@ body {
     @apply relative;
   }
 
+  #boot-screen {
+    @apply fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center gap-8;
+
+    img {
+      @apply w-14 h-auto;
+    }
+
+    .boot-progress {
+      @apply w-56 h-1 rounded-full bg-white/15 overflow-hidden;
+    }
+
+    .boot-progress-fill {
+      @apply w-full h-full bg-white rounded-full scale-x-0;
+    }
+  }
+
   #window-controls {
     @apply flex gap-2;
 

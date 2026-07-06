@@ -5,5 +5,15 @@ import WindowControls from "./WindowControls";
 import Home from "./Home";
 import MobileHome from "./MobileHome";
 import ThemeToggle from "./ThemeToggle";
+import BootScreen from "./BootScreen";
 
-export { Navbar, Welcome, Dock, WindowControls, Home, MobileHome, ThemeToggle };
+export {
+  Navbar,
+  Welcome,
+  Dock,
+  WindowControls,
+  Home,
+  MobileHome,
+  ThemeToggle,
+  BootScreen,
+};

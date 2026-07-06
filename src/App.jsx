@@ -1,4 +1,12 @@
-import { Navbar, Welcome, Dock, Home, MobileHome } from "#components";
+import { useState } from "react";
+import {
+  Navbar,
+  Welcome,
+  Dock,
+  Home,
+  MobileHome,
+  BootScreen,
+} from "#components";
 import {
   Contact,
   Finder,
@@ -16,9 +24,12 @@ gsap.registerPlugin(Draggable);
 
 const App = () => {
   const isMobile = useIsMobile();
+  const [booted, setBooted] = useState(false);
 
   return (
     <main>
+      {!booted && <BootScreen onComplete={() => setBooted(true)} />}
+
       {isMobile ? (
         <MobileHome />
       ) : (
