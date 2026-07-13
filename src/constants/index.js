@@ -100,30 +100,28 @@ const educationHistory = [
 
 const techStack = [
   {
+    category: "Languages",
+    items: ["JavaScript", "Python", "C"],
+  },
+  {
     category: "Frontend",
-    items: ["Html", "CSS", "React.js"],
+    items: ["React.js", "Redux Toolkit", "Tailwind CSS", "HTML/CSS"],
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express", "FastAPI"],
+    items: ["Node.js", "Express.js", "REST APIs", "JWT Auth", "Flask"],
   },
-  {
-    category: "Styling",
-    items: ["Tailwind CSS", "BootStrep", "CSS"],
-  },
-
   {
     category: "Database",
     items: ["MongoDB", "PostgreSQL", "MySQL"],
   },
-
   {
-    category: "Data Scientist",
-    items: ["Numpy", "Pandas", "Matplotlib", "Seaborn"],
+    category: "ML & Data Science",
+    items: ["NumPy", "Pandas", "TensorFlow", "Scikit-learn", "Matplotlib"],
   },
   {
     category: "Dev Tools",
-    items: ["Git", "GitHub", "Docker", "Pacman"],
+    items: ["Git", "GitHub", "Postman", "Docker"],
   },
 ];
 
@@ -240,10 +238,11 @@ const WORK_LOCATION = {
           fileType: "txt",
           position: "top-5 left-10",
           description: [
-            "The Car Rental website is a sleek and modern platform designed for rent a best car.",
-            "Instead of a simple rent it display price, car images, car fuel type, seating capacity and more.",
-            "Car owner can give thire cars on rent from our platform and for them there is dedicated dashbord.",
-            "It's built with React, Node.js and Tailwind, ensuring fast performance, responsive design, and a clean, premium look.",
+            "A two-sided car rental marketplace connecting renters and vehicle owners, with advanced filtering by brand, fuel type, seating capacity, and availability.",
+            "Implemented JWT-based authentication and role-based authorization to secure renter and owner workflows, verified with Postman across role-based test scenarios.",
+            "Built an end-to-end booking workflow with availability validation and owner controls, maintaining average API response times below 200ms.",
+            "Structured MongoDB schemas and indexes to support sub-120ms search queries across the full vehicle catalog.",
+            "Built with React, Node.js, Express.js, MongoDB, JWT, and Tailwind CSS.",
           ],
         },
         {
@@ -293,10 +292,11 @@ const WORK_LOCATION = {
           fileType: "txt",
           position: "top-5 right-10",
           description: [
-            "VideoTube is completly inspired by youtube.",
-            "Here I implemented authentication using JWt varification.",
-            "I Implemented complete backend using mongodb in where i used mongos, created schema and used aggregate pipeline.",
-            "It's built with React, Node.js, Express.js and Tailwind, so it runs fast, looks professional, and works seamlessly on any device.",
+            "A YouTube-style video platform handling upload, playback, subscriptions, comments, likes, and watch history, with lazy loading, pagination, and infinite scrolling.",
+            "Implemented secure JWT authentication with automatic refresh-token rotation, supporting 7-day login sessions without forced re-logins.",
+            "Centralized application state with Redux Toolkit and client-side caching, reducing unnecessary API requests and improving UI responsiveness.",
+            "Built protected-route middleware and access control covering 8 endpoints, verified with 13 Postman API requests.",
+            "Built with React, Redux Toolkit, Node.js, Express.js, MongoDB, JWT, and Cloudinary.",
           ],
         },
         {
@@ -346,10 +346,11 @@ const WORK_LOCATION = {
           fileType: "txt",
           position: "top-5 left-10",
           description: [
-            "Our Brain Tumor Detection App is a fast and convenient way to check if there is any type of tumor or not.",
-            "Instead of manually cheking tumor where exper's knowladge is require and takes lot of time, using my model user can easily check tumor.",
-            "I have used tensorflow's VGG16 pretrained model and implemented new nodes for better accuracy.",
-            "It's built with Python, Pandas, NumPy, Seaborn, Matplotlib, Tensorflow, Keras and VGG16 algorithom.",
+            "A deep learning system that classifies brain tumor types from MRI scans, built during a 3-month AI/ML internship at ADS Foundation, Gandhinagar.",
+            "Trained a TensorFlow model with a VGG16 transfer-learning backbone on 7,200 MRI images, achieving 0.90 precision, 0.89 recall, and a 0.89 F1 score.",
+            "Applied image preprocessing, augmentation, and transfer learning to improve generalization and reduce overfitting during training.",
+            "Deployed the trained model behind a Flask REST API to enable image classification through a web interface.",
+            "Built with Python, NumPy, Pandas, TensorFlow, Keras, and Scikit-learn.",
           ],
         },
         {
@@ -428,8 +429,9 @@ const ABOUT_LOCATION = {
       subtitle: "Meet the Developer Behind the Code",
       image: "/images/kalpesh.jpeg",
       description: [
-        "Hey! I’m Kalpesh 👋, a web developer who enjoys building sleek, interactive websites that actually work well.",
+        "Hey! I’m Kalpesh 👋, a full-stack developer who enjoys building sleek, interactive websites that actually work well.",
         "I specialize in JavaScript, React, Express and Node.js and I love making things feel smooth, fast, and just a little bit delightful.",
+        "I've also spent time on the ML/data science side - training and deploying a deep learning model during an AI internship - so I'm just as comfortable reading a confusion matrix as I am debugging an API.",
         "I’m big on clean UI, good UX, and writing code that doesn’t need a search party to debug.",
         "Outside of dev work, you'll find me working on linux, using hyprland, or watching series I absolutely convinced myself I need to watch 😅",
       ],
@@ -446,12 +448,21 @@ const RESUME_LOCATION = {
   children: [
     {
       id: 1,
-      name: "Resume.pdf",
+      name: "Resume - Full Stack.pdf",
       icon: "/images/pdf.png",
       kind: "file",
       fileType: "pdf",
-      // you can add `href` if you want to open a hosted resume
-      // href: "/your/resume/path.pdf",
+      resumeKey: "fullstack",
+      href: "/files/resume-fullstack.pdf",
+    },
+    {
+      id: 2,
+      name: "Resume - ML & Data Science.pdf",
+      icon: "/images/pdf.png",
+      kind: "file",
+      fileType: "pdf",
+      resumeKey: "ml",
+      href: "/files/resume-ml.pdf",
     },
   ],
 };
