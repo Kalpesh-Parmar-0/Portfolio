@@ -88,8 +88,8 @@ const WindowWraper = (Component, windowKey) => {
 
       if (isMaximized) {
         const rect = el.getBoundingClientRect();
-        const currentX = instance?.x ?? 0;
-        const currentY = instance?.y ?? 0;
+        const currentX = gsap.getProperty(el, "x");
+        const currentY = gsap.getProperty(el, "y");
 
         maximizeSnapshotRef.current = {
           x: currentX,
@@ -166,8 +166,8 @@ const WindowWraper = (Component, windowKey) => {
           ?.getBoundingClientRect();
 
         minimizeSnapshotRef.current = {
-          x: instance?.x ?? 0,
-          y: instance?.y ?? 0,
+          x: gsap.getProperty(el, "x"),
+          y: gsap.getProperty(el, "y"),
         };
 
         instance?.disable();
