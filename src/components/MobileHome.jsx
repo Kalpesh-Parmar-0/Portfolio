@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { dockApps } from "#constants";
 import useWindowStore from "#store/window";
+import { ThemeToggle } from "#components";
 
 const MobileHome = () => {
   const { openWindow, closeWindow, windows } = useWindowStore();
@@ -29,9 +30,6 @@ const MobileHome = () => {
 
   const handleOpen = (app) => {
     if (!app.canOpen) return;
-
-    // iOS-style single-app-at-a-time: close whatever else is open before
-    // opening the tapped app fullscreen.
     Object.entries(windows).forEach(([key, win]) => {
       if (key !== app.id && win.isOpen) closeWindow(key);
     });
@@ -41,11 +39,15 @@ const MobileHome = () => {
 
   return (
     <section id="mobile-home">
+      <div className="scrim" />
+
       <div className="status-bar">
         <time>{dayjs().format("h:mm A")}</time>
-        <div className="flex items-center gap-1.5">
-          <img src="/icons/wifi.svg" alt="" className="size-3.5" />
-          <img src="/icons/user.svg" alt="" className="size-3.5" />
+        <div className="flex items-center gap-2.5">
+          <ThemeToggle
+            className="p-0.5 rounded transition-colors hover:bg-white/15 text-white cursor-pointer"
+            iconClassName="size-3.5"
+          />
         </div>
       </div>
 

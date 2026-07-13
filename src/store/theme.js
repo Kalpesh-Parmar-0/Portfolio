@@ -26,8 +26,7 @@ const readStoredPreference = () => {
 
 const initialPreference = readStoredPreference();
 const initialResolved = resolvePreference(initialPreference);
-// Applied as soon as this module is evaluated (before first paint) so
-// there's no flash of the wrong theme on load.
+
 applyResolvedTheme(initialResolved);
 
 const useThemeStore = create((set) => ({
@@ -41,8 +40,6 @@ const useThemeStore = create((set) => ({
   },
 }));
 
-// If the user hasn't overridden it, keep following the OS live (e.g. macOS
-// switching to Dark Mode automatically at sunset).
 media.addEventListener("change", (event) => {
   if (useThemeStore.getState().preference !== "system") return;
   const resolved = event.matches ? "dark" : "light";

@@ -133,13 +133,6 @@ const socials = [
     bg: "#f4656b",
     link: "https://github.com/Kalpesh-Parmar-0",
   },
-  // {
-  //   id: 2,
-  //   text: "Platform",
-  //   icon: "/icons/atom.svg",
-  //   bg: "#4bcb63",
-  //   link: "https://jsmastery.com/",
-  // },
   {
     id: 3,
     text: "Twitter/X",

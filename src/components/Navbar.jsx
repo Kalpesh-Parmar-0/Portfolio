@@ -9,8 +9,10 @@ const Navbar = () => {
   return (
     <nav>
       <div>
-        <img src="/images/logo.svg" alt="logo" />
-        <p className="font-bold">Kalpesh's Portfolio</p>
+        <img src="/images/logo.svg" alt="logo" className="dark:invert" />
+        <p className="font-bold text-black dark:text-gray-100">
+          Kalpesh's Portfolio
+        </p>
         <ul>
           {navLinks.map(({ id, name, type }) => (
             <li key={id} onClick={() => openWindow(type)}>
@@ -21,17 +23,7 @@ const Navbar = () => {
       </div>
 
       <div>
-        <ul>
-          {navIcons.map(({ id, img }) =>
-            img === "/icons/mode.svg" ? (
-              <ThemeToggle key={id} />
-            ) : (
-              <li key={id}>
-                <img src={img} className="icon-hover" alt={`icon-${id}`} />
-              </li>
-            ),
-          )}
-        </ul>
+        <ThemeToggle />
 
         <time>{dayjs().format("ddd MMM D h:mm A")}</time>
       </div>
