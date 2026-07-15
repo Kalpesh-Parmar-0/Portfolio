@@ -5,30 +5,26 @@ import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 
-const MIN_WIDTH = 320;
-const MIN_HEIGHT = 220;
+const MIN_WIDTH = 320; // min width for resizing
+const MIN_HEIGHT = 220; // min height for resizing user can't make window too much tiny
 
+// higher order component which takes other components for draging and resizing effects
 const WindowWraper = (Component, windowKey) => {
+  // component which we recived
   const Wrapped = (props) => {
     const { focusWindow, windows } = useWindowStore();
-    const { isOpen, zIndex, isMinimized, isMaximized } = windows[windowKey];
+    const { isOpen, zIndex, isMinimized, isMaximized } = windows[windowKey]; // state of current window
     const isMobile = useIsMobile();
-    const ref = useRef(null);
-    const draggableRef = useRef(null);
-    // Separate snapshots: maximize/minimize can each be toggled independently
-    // (e.g. minimizing a window that's already maximized), so they can't
-    // share one ref without clobbering each other.
-    const maximizeSnapshotRef = useRef(null);
-    const minimizeSnapshotRef = useRef(null);
-    const resizeStateRef = useRef(null);
+    const ref = useRef(null); // ref to current window
+    const draggableRef = useRef(null); // draggable ref used when dragging component
+    const maximizeSnapshotRef = useRef(null); // stores state of component before maximizing like current position, width, hight so when we press of maximize then it restores to current position
+    const minimizeSnapshotRef = useRef(null); // stores state of component before minimizing like current position, width, hight so that when restoring from minimize it appears to same position as before minimizing
+    const resizeStateRef = useRef(null); // while resizing it calculated whole time so that when user resize component then it appears resized instently
 
-    // Open animation. On mobile, windows are fullscreen "apps" - a slide-up
-    // presentation (iOS-style) reads better there than the desktop
-    // scale/fade-in.
     useGSAP(() => {
-      const el = ref.current;
-      if (!el || !isOpen) return;
-      el.style.display = "block";
+      const el = ref.current; // ref to current window
+      if (!el || !isOpen) return; // if no window open then return
+      el.style.display = "block"; // make display block again because before this render function like minimize window could make display none
 
       if (isMobile) {
         gsap.fromTo(
@@ -45,52 +41,42 @@ const WindowWraper = (Component, windowKey) => {
       }
     }, [isOpen, isMobile]);
 
-    // Draggable setup - restricted to the header as the drag handle (not
-    // the whole window). This also keeps it from fighting with the resize
-    // handles below: Draggable checks pointerdown targets against its
-    // trigger itself, so without this restriction a drag on the resize
-    // handles would kick off a window-drag at the same time as a resize.
-    // Disabled entirely on mobile - fullscreen "apps" don't move around.
+    // draggable setup for component
     useGSAP(() => {
-      const el = ref.current;
+      const el = ref.current; // ref to current window
       if (!el) return;
-      const header = el.querySelector("#window-header") ?? el;
+      const header = el.querySelector("#window-header") ?? el; // finder header of component
+      //create instance of draggable which can apply to ref
       const [instance] = Draggable.create(el, {
-        trigger: header,
-        onPress: () => focusWindow(windowKey),
+        trigger: header, // only trigger draggable effect if mouse is on header
+        onPress: () => focusWindow(windowKey), // if window is not on top then make it on top of every other window
       });
       if (isMobile) {
-        instance.disable();
-        // A window may have been dragged around before the viewport crossed
-        // into mobile width (e.g. someone shrinking their browser to
-        // preview it, or rotating a tablet). Mobile positions windows with
-        // fixed/inset-0 fullscreen CSS, and a leftover drag transform would
-        // stack right on top of that, shoving the "fullscreen" box off
-        // however far it had been dragged. Clear it so mobile always starts
-        // from a clean slate.
-        gsap.set(el, { x: 0, y: 0 });
+        instance.disable(); // remove dragable effect if device is mobile
+        gsap.set(el, { x: 0, y: 0 }); // set window
       }
       draggableRef.current = instance;
 
       return () => instance.kill();
-    }, [isMobile]);
+    }, [isMobile]); // run this hook if isMobile changes
 
-    // Maximize / un-maximize animation. Not applicable on mobile - windows
-    // are always fullscreen there, so this is a no-op.
+    // hook for maximizing and restoring window
     useGSAP(() => {
-      const el = ref.current;
+      const el = ref.current; // ref to current window
       const instance = draggableRef.current;
       if (!el || !isOpen || isMobile) return;
 
+      // hardcoded values to not appear window on it while maximizing
       const navGap = 36;
       const sideGap = 12;
       const dockGap = 104;
 
       if (isMaximized) {
-        const rect = el.getBoundingClientRect();
-        const currentX = gsap.getProperty(el, "x");
-        const currentY = gsap.getProperty(el, "y");
+        const rect = el.getBoundingClientRect(); // stores current position of window such as left, top, width, height
+        const currentX = gsap.getProperty(el, "x"); // gsap's x(left) movement by draging
+        const currentY = gsap.getProperty(el, "y"); // gsap's y movement
 
+        // stores snapshot of window before maximizing
         maximizeSnapshotRef.current = {
           x: currentX,
           y: currentY,
@@ -102,31 +88,24 @@ const WindowWraper = (Component, windowKey) => {
 
         const targetLeft = sideGap;
         const targetTop = navGap;
-        const targetWidth = Math.max(320, window.innerWidth - sideGap * 2);
+        const targetWidth = Math.max(320, window.innerWidth - sideGap * 2); // calculate width of maximized window so that it have side gaps
         const targetHeight = Math.max(
           240,
-          window.innerHeight - navGap - dockGap,
+          window.innerHeight - navGap - dockGap, // calculate hight of window so that it don't come on top of dock
         );
 
-        // Express the destination purely as a transform delta from the
-        // window's actual current on-screen box (rect), instead of
-        // switching position to "fixed" and animating top/left directly.
-        // Different windows use different Tailwind positioning classes
-        // (px-based vs. fraction/%-based), and animating top/left mixed
-        // with a position-mode switch is sensitive to that - transform is
-        // always resolved in real pixels regardless of how the window was
-        // originally positioned, so this can't drift off-screen.
         gsap.to(el, {
-          x: currentX + (targetLeft - rect.left),
-          y: currentY + (targetTop - rect.top),
-          width: targetWidth,
-          height: targetHeight,
+          x: currentX + (targetLeft - rect.left), // maximizing window's x position
+          y: currentY + (targetTop - rect.top), // maximizing window's y position
+          width: targetWidth, // width of maximizing window
+          height: targetHeight, // height of maximizing window
           borderRadius: 0,
           duration: 0.4,
           ease: "power2.inOut",
         });
       } else if (maximizeSnapshotRef.current) {
-        const { x, y, width, height } = maximizeSnapshotRef.current;
+        // if window is maximized then resize to previouse position
+        const { x, y, width, height } = maximizeSnapshotRef.current; // use maximize snapshot that taken before maximizing
 
         gsap.to(el, {
           x,
@@ -137,44 +116,36 @@ const WindowWraper = (Component, windowKey) => {
           duration: 0.35,
           ease: "power2.inOut",
           onComplete: () => {
-            // Only hand borderRadius back to the window's own CSS class -
-            // width/height stay as the explicit px values we just animated
-            // to (the pre-maximize snapshot), so a window the user had
-            // manually resized keeps that size instead of snapping back to
-            // its default CSS width/height.
-            gsap.set(el, { clearProps: "borderRadius" });
-            // Only re-enable dragging if the window isn't ALSO currently
-            // minimized (e.g. minimized while maximized, then un-maximized
-            // via some other path) - keep it locked while hidden.
+            gsap.set(el, { clearProps: "borderRadius" }); // remove border redious
             if (!isMinimized) instance?.enable();
           },
         });
       }
     }, [isMaximized, isOpen, isMobile]);
 
-    // Minimize / restore animation (genie-to-dock effect). Not applicable
-    // on mobile - there's no dock to minimize toward there.
+    // minimize, restore window hook
     useGSAP(() => {
       const el = ref.current;
       const instance = draggableRef.current;
       if (!el || !isOpen || isMobile) return;
 
       if (isMinimized) {
-        const rect = el.getBoundingClientRect();
+        const rect = el.getBoundingClientRect(); // get left, top, width, height of window
         const dockRect = document
           .querySelector("#dock")
-          ?.getBoundingClientRect();
+          ?.getBoundingClientRect(); // find left, top, width, height of dock
 
+        // snap shot of current position of window before minimizing
         minimizeSnapshotRef.current = {
           x: gsap.getProperty(el, "x"),
           y: gsap.getProperty(el, "y"),
         };
 
-        instance?.disable();
+        instance?.disable(); // while minimizing window is not draggable
 
         const targetX = dockRect
           ? dockRect.left + dockRect.width / 2 - (rect.left + rect.width / 2)
-          : 0;
+          : 0; // calculates window icon's center in dock
         const targetY = (dockRect?.top ?? window.innerHeight) - rect.top;
 
         gsap.to(el, {
@@ -186,11 +157,11 @@ const WindowWraper = (Component, windowKey) => {
           duration: 0.45,
           ease: "power2.in",
           onComplete: () => {
-            el.style.display = "none";
+            el.style.display = "none"; // make display none of window
           },
         });
       } else if (minimizeSnapshotRef.current) {
-        el.style.display = "block";
+        el.style.display = "block"; // makes display block of window
 
         gsap.fromTo(
           el,
@@ -203,8 +174,7 @@ const WindowWraper = (Component, windowKey) => {
             duration: 0.4,
             ease: "power2.out",
             onComplete: () => {
-              // Only re-enable dragging if it isn't ALSO currently maximized.
-              if (!isMaximized) instance?.enable();
+              if (!isMaximized) instance?.enable(); // enable to dragg window
             },
           },
         );
@@ -217,24 +187,19 @@ const WindowWraper = (Component, windowKey) => {
       el.style.display = isOpen ? "block" : "none";
     }, [isOpen]);
 
-    // Resize via right/bottom/corner handles. Deliberately edge/corner-only
-    // (never top or left) so resizing only ever changes width/height - it
-    // never has to also shift the window's x/y transform to keep the
-    // opposite edge anchored, which keeps this independent of whatever
-    // positioning units (%, px, left-based, right-based) a window's CSS uses.
-    // Not offered on mobile - fullscreen "apps" aren't resizable.
+    // resizing windows
     const startResize = (direction) => (e) => {
-      // Stop this from also bubbling to the Draggable instance listening on
-      // the same element, which would otherwise start dragging the window.
-      e.stopPropagation();
+      e.stopPropagation(); // stops draggable effect
       e.preventDefault();
 
       const el = ref.current;
       if (!el || isMaximized || isMobile) return;
 
-      focusWindow(windowKey);
+      focusWindow(windowKey); // focus window which we want to resize
 
-      const rect = el.getBoundingClientRect();
+      const rect = el.getBoundingClientRect(); // current x, y, width, height of window
+
+      // store direction, x, y, width, height before starting of resize
       resizeStateRef.current = {
         direction,
         startX: e.clientX,
@@ -243,21 +208,22 @@ const WindowWraper = (Component, windowKey) => {
         startHeight: rect.height,
       };
 
+      // runs everytime pointer moves
       const handleMove = (moveEvent) => {
-        const state = resizeStateRef.current;
+        const state = resizeStateRef.current; // snapshot before resize
         if (!state) return;
 
         const dx = moveEvent.clientX - state.startX;
         const dy = moveEvent.clientY - state.startY;
         const maxWidth = window.innerWidth - 24;
         const maxHeight = window.innerHeight - 24;
-        const next = {};
+        const next = {}; // stores width and height
 
         if (state.direction === "right" || state.direction === "corner") {
           next.width = Math.min(
             maxWidth,
             Math.max(MIN_WIDTH, state.startWidth + dx),
-          );
+          ); // srores min width between screen width or (max of min width or size)
         }
         if (state.direction === "bottom" || state.direction === "corner") {
           next.height = Math.min(
@@ -269,6 +235,7 @@ const WindowWraper = (Component, windowKey) => {
         gsap.set(el, next);
       };
 
+      // stops resizing when pointer releashed
       const stopResize = () => {
         resizeStateRef.current = null;
         window.removeEventListener("pointermove", handleMove);

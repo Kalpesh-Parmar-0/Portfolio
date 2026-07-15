@@ -11,7 +11,7 @@ const MobileHome = () => {
   const gridRef = useRef(null);
 
   useGSAP(() => {
-    const icons = gridRef.current?.querySelectorAll(".app-icon");
+    const icons = gridRef.current?.querySelectorAll(".app-icon"); // finds all app icons and appears in grid
     if (!icons?.length) return;
 
     gsap.fromTo(
@@ -34,7 +34,7 @@ const MobileHome = () => {
       if (key !== app.id && win.isOpen) closeWindow(key);
     });
 
-    openWindow(app.id);
+    openWindow(app.id); // opens app's window
   };
 
   return (

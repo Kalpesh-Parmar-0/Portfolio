@@ -16,7 +16,7 @@ const WindowControls = ({ target }) => {
         onClick={() => closeWindow(target)}
       >
         <ChevronLeft className="size-4" strokeWidth={2.5} />
-        <span>Home</span>
+        <span>Back</span>
       </button>
     );
   }

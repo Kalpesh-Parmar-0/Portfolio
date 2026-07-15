@@ -7,15 +7,15 @@ import useLocationStore from "#store/location";
 
 const projects = locations.work?.children ?? [];
 const Home = () => {
-  const { setActiveLocation } = useLocationStore();
+  const { setActiveLocation } = useLocationStore(); // set location of project in finder
   const { openWindow } = useWindowStore();
 
   const handleOpenProjectFinder = (project) => {
-    setActiveLocation(project);
+    setActiveLocation(project); // open's my project in finder
     openWindow("finder");
   };
   useGSAP(() => {
-    Draggable.create(".folder");
+    Draggable.create(".folder"); // makes each folder draggable
   }, []);
   return (
     <section id="home">
