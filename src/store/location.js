@@ -4,6 +4,7 @@ import { immer } from "zustand/middleware/immer";
 
 const DEFAULT_LOCATION = locations.work;
 
+// create zustan store
 const useLocationStore = create(
   immer((set) => ({
     activeLocation: DEFAULT_LOCATION,

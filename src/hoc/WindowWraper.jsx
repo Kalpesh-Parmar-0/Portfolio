@@ -20,10 +20,13 @@ const WindowWraper = (Component, windowKey) => {
     const maximizeSnapshotRef = useRef(null); // stores state of component before maximizing like current position, width, hight so when we press of maximize then it restores to current position
     const minimizeSnapshotRef = useRef(null); // stores state of component before minimizing like current position, width, hight so that when restoring from minimize it appears to same position as before minimizing
     const resizeStateRef = useRef(null); // while resizing it calculated whole time so that when user resize component then it appears resized instently
+    const stateRef = useRef({ isMinimized, isMaximized }); // Finds if current boolean value of is maximize and minimized
+    stateRef.current = { isMinimized, isMaximized };
 
     useGSAP(() => {
       const el = ref.current; // ref to current window
       if (!el || !isOpen) return; // if no window open then return
+      gsap.killTweensOf(el); // if there is any current gsap
       el.style.display = "block"; // make display block again because before this render function like minimize window could make display none
 
       if (isMobile) {
@@ -41,7 +44,6 @@ const WindowWraper = (Component, windowKey) => {
       }
     }, [isOpen, isMobile]);
 
-    // draggable setup for component
     useGSAP(() => {
       const el = ref.current; // ref to current window
       if (!el) return;
@@ -72,6 +74,14 @@ const WindowWraper = (Component, windowKey) => {
       const dockGap = 104;
 
       if (isMaximized) {
+        instance?.disable();
+        gsap.killTweensOf(el);
+        gsap.set(el, {
+          scale: 1,
+          opacity: 1,
+          transformOrigin: "50% 50%",
+        });
+
         const rect = el.getBoundingClientRect(); // stores current position of window such as left, top, width, height
         const currentX = gsap.getProperty(el, "x"); // gsap's x(left) movement by draging
         const currentY = gsap.getProperty(el, "y"); // gsap's y movement
@@ -83,8 +93,6 @@ const WindowWraper = (Component, windowKey) => {
           width: rect.width,
           height: rect.height,
         };
-
-        instance?.disable();
 
         const targetLeft = sideGap;
         const targetTop = navGap;
@@ -117,7 +125,7 @@ const WindowWraper = (Component, windowKey) => {
           ease: "power2.inOut",
           onComplete: () => {
             gsap.set(el, { clearProps: "borderRadius" }); // remove border redious
-            if (!isMinimized) instance?.enable();
+            if (!stateRef.current.isMinimized) instance?.enable();
           },
         });
       }
@@ -130,6 +138,10 @@ const WindowWraper = (Component, windowKey) => {
       if (!el || !isOpen || isMobile) return;
 
       if (isMinimized) {
+        instance?.disable();
+        gsap.killTweensOf(el);
+        gsap.set(el, { scale: 1, opacity: 1, transformOrigin: "50% 50%" });
+
         const rect = el.getBoundingClientRect(); // get left, top, width, height of window
         const dockRect = document
           .querySelector("#dock")
@@ -140,8 +152,6 @@ const WindowWraper = (Component, windowKey) => {
           x: gsap.getProperty(el, "x"),
           y: gsap.getProperty(el, "y"),
         };
-
-        instance?.disable(); // while minimizing window is not draggable
 
         const targetX = dockRect
           ? dockRect.left + dockRect.width / 2 - (rect.left + rect.width / 2)
@@ -162,6 +172,7 @@ const WindowWraper = (Component, windowKey) => {
         });
       } else if (minimizeSnapshotRef.current) {
         el.style.display = "block"; // makes display block of window
+        gsap.killTweensOf(el);
 
         gsap.fromTo(
           el,
@@ -174,12 +185,13 @@ const WindowWraper = (Component, windowKey) => {
             duration: 0.4,
             ease: "power2.out",
             onComplete: () => {
-              if (!isMaximized) instance?.enable(); // enable to dragg window
+              // Only re-enable dragging if it isn't ALSO currently maximized.
+              if (!stateRef.current.isMaximized) instance?.enable();
             },
           },
         );
       }
-    }, [isMinimized, isMaximized, isOpen, isMobile]);
+    }, [isMinimized, isOpen, isMobile]);
 
     useLayoutEffect(() => {
       const el = ref.current;

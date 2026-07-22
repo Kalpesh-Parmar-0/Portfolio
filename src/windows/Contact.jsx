@@ -1,36 +1,16 @@
 import { useState } from "react";
-import { Mail, Phone } from "lucide-react";
 import { WindowControls } from "#components";
-import { socials } from "#constants";
+import { socials, contactDetails } from "#constants";
 import WindowWraper from "#hoc/WindowWraper";
 
-const contactDetails = [
-  {
-    id: "phone",
-    label: "Phone",
-    value: "+91 6355797935",
-    href: "tel:+916355797935",
-    icon: Phone,
-    accent: "from-emerald-500/20 to-emerald-400/10",
-  },
-  {
-    id: "email",
-    label: "Email",
-    value: "kalpesh00parmar0@gmail.com",
-    href: "mailto:kalpesh00parmar0@gmail.com",
-    icon: Mail,
-    accent: "from-sky-500/20 to-sky-400/10",
-  },
-];
-
 const Contact = () => {
-  const [copiedId, setCopiedId] = useState(null);
+  const [copiedId, setCopiedId] = useState(null); // email or phone is copied or not
 
   const handleOpenContact = async (detail) => {
     try {
-      await navigator.clipboard.writeText(detail.value);
-      setCopiedId(detail.id);
-      window.setTimeout(() => setCopiedId(null), 1600);
+      await navigator.clipboard.writeText(detail.value); // write email or phone's value
+      setCopiedId(detail.id); // copy email or phone
+      // window.setTimeout(() => setCopiedId(null), 1600);
     } catch {
       // Ignore clipboard issues and still open the contact action.
     }

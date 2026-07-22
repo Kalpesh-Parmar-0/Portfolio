@@ -1,3 +1,5 @@
+import { Mail, Phone } from "lucide-react";
+
 const navLinks = [
   {
     id: 1,
@@ -517,3 +519,24 @@ const WINDOW_CONFIG = {
 };
 
 export { INITIAL_Z_INDEX, WINDOW_CONFIG };
+
+const contactDetails = [
+  {
+    id: "phone",
+    label: "Phone",
+    value: "+91 6355797935",
+    href: "tel:+916355797935",
+    icon: Phone,
+    accent: "from-emerald-500/20 to-emerald-400/10",
+  },
+  {
+    id: "email",
+    label: "Email",
+    value: "kalpesh00parmar0@gmail.com",
+    href: "mailto:kalpesh00parmar0@gmail.com",
+    icon: Mail,
+    accent: "from-sky-500/20 to-sky-400/10",
+  },
+];
+
+export { contactDetails };
